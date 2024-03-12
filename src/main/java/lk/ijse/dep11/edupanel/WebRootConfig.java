@@ -1,5 +1,6 @@
 package lk.ijse.dep11.edupanel;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.annotation.RequestScope;
@@ -20,6 +21,11 @@ public class WebRootConfig {
     @RequestScope
     public EntityManager entityManager() {
         return entityManagerFactory().createEntityManager();
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
 }
