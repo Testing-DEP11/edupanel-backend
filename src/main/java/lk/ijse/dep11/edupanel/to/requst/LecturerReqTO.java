@@ -35,7 +35,7 @@ public class LecturerReqTO implements Serializable {
     @LecturerImage
     private MultipartFile picture;
     @Pattern(regexp = "^http(s)://.+$", message = "Invalid linkedin")
-    private String linkedin;
+    private String linkedIn;
 
     public interface Create extends Default{}
     public interface Update extends Default{}

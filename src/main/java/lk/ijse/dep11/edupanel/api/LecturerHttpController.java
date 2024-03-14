@@ -46,9 +46,9 @@ public class LecturerHttpController {
             em.persist(lecturer);
             LecturerTO lecturerTO = mapper.map(lecturer, LecturerTO.class);
 
-            if(lecturerReqTO.getLinkedin() != null) {
-                em.persist(new LinkedIn(lecturer, lecturerReqTO.getLinkedin()));
-                lecturerTO.setLinkedin(lecturerReqTO.getLinkedin());
+            if(lecturerReqTO.getLinkedIn() != null) {
+                em.persist(new LinkedIn(lecturer, lecturerReqTO.getLinkedIn()));
+                lecturerTO.setLinkedIn(lecturerReqTO.getLinkedIn());
             }
 
             if(lecturerReqTO.getPicture() != null) {
@@ -71,14 +71,72 @@ public class LecturerHttpController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{lecturer-id}", consumes = "multipart/form-data")
-    public void updateLecturerDetailsViaMultipart(@PathVariable("lecturer-id") Integer lecturerId){
-        Lecturer lecturer = em.find(Lecturer.class, lecturerId);
-        if(lecturer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public void updateLecturerDetailsViaMultipart(@PathVariable("lecturer-id") Integer lecturerId,
+                                                  @ModelAttribute @Validated(LecturerReqTO.Update.class) LecturerReqTO lecturerReqTO){
+        Lecturer currentLecturer = em.find(Lecturer.class, lecturerId);
+        if(currentLecturer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        em.getTransaction().begin();
+        try {
+            Lecturer newLecturer = mapper.map(lecturerReqTO, Lecturer.class);
+            newLecturer.setId(lecturerId);
+            newLecturer.setPicture(null);
+            newLecturer.setLinkedIn(null);
+
+            if(lecturerReqTO.getPicture() != null) {
+                newLecturer.setPicture(new Picture(newLecturer, "lecturer/" + lecturerId));
+            }
+
+            if (lecturerReqTO.getLinkedIn() != null) {
+                newLecturer.setLinkedIn(new LinkedIn(newLecturer, lecturerReqTO.getLinkedIn()));
+            }
+
+            updateLinkedIn(currentLecturer, newLecturer);
+
+
+            if (newLecturer.getPicture() != null && currentLecturer.getPicture() == null) {
+                em.persist(newLecturer.getPicture());
+                bucket.create(newLecturer.getPicture().getPicturePath(), lecturerReqTO.getPicture().getInputStream(), lecturerReqTO.getPicture().getContentType());
+            } else if (newLecturer.getPicture() == null && currentLecturer.getPicture() != null) {
+                em.remove(currentLecturer.getPicture());
+                bucket.get(currentLecturer.getPicture().getPicturePath()).delete();
+            } else if (newLecturer.getPicture() != null){
+                em.merge(newLecturer.getPicture());
+                bucket.create(newLecturer.getPicture().getPicturePath(), lecturerReqTO.getPicture().getInputStream(), lecturerReqTO.getPicture().getContentType());
+            }
+
+            em.merge(newLecturer);
+
+            em.getTransaction().commit();
+        } catch (Throwable e) {
+            em.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{lecturer-id}", consumes = "application/json")
-    public void updateLecturerDetailsViaJson(@PathVariable("lecturer-id") Integer lecturerId){}
+    public void updateLecturerDetailsViaJson(@PathVariable("lecturer-id") Integer lecturerId, @RequestBody @Validated LecturerTO lecturerTO){
+        Lecturer currentLecturer = em.find(Lecturer.class, lecturerId);
+        if(currentLecturer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        em.getTransaction().begin();
+        try {
+            Lecturer newLecturer = mapper.map(lecturerTO, Lecturer.class);
+            newLecturer.setId(lecturerId);
+            newLecturer.setPicture(currentLecturer.getPicture());
+            newLecturer.setLinkedIn(lecturerTO.getLinkedIn() != null ? new LinkedIn(newLecturer, lecturerTO.getLinkedIn()): null);
+
+            updateLinkedIn(currentLecturer, newLecturer);
+
+            em.merge(newLecturer);
+
+            em.getTransaction().commit();
+        } catch (Throwable e) {
+            em.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
+    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping({"/{lecturer-id}"})
@@ -111,7 +169,7 @@ public class LecturerHttpController {
         if(lecturer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         LecturerTO lecturerTO = mapper.map(lecturer, LecturerTO.class);
         if(lecturer.getLinkedIn() != null){
-            lecturerTO.setLinkedin(lecturer.getLinkedIn().getUrl());
+            lecturerTO.setLinkedIn(lecturer.getLinkedIn().getUrl());
         }
         if(lecturer.getPicture() != null) {
             lecturerTO.setPicture(bucket.get(lecturer.getPicture().getPicturePath()).signUrl(1, TimeUnit.DAYS).toString());
@@ -135,13 +193,23 @@ public class LecturerHttpController {
         return query.getResultStream().map(lecturerEntity -> {
             LecturerTO lecturerTO = mapper.map(lecturerEntity, LecturerTO.class);
             if(lecturerEntity.getLinkedIn() != null){
-                lecturerTO.setLinkedin(lecturerEntity.getLinkedIn().getUrl());
+                lecturerTO.setLinkedIn(lecturerEntity.getLinkedIn().getUrl());
             }
             if(lecturerEntity.getPicture() != null) {
                 lecturerTO.setPicture(bucket.get(lecturerEntity.getPicture().getPicturePath()).signUrl(1, TimeUnit.DAYS).toString());
             }
             return lecturerTO;
         }).collect(Collectors.toList());
+    }
+
+    private void updateLinkedIn(Lecturer currentLecturer, Lecturer newLecturer) {
+        if (newLecturer.getLinkedIn() != null && currentLecturer.getLinkedIn() == null) {
+            em.persist(newLecturer.getLinkedIn());
+        } else if (newLecturer.getLinkedIn() == null && currentLecturer.getLinkedIn() != null) {
+            em.remove(currentLecturer.getLinkedIn());
+        } else if (newLecturer.getLinkedIn() != null){
+            em.merge(newLecturer.getLinkedIn());
+        }
     }
 
 }

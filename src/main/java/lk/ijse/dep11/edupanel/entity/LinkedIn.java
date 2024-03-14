@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class LinkedIn implements Serializable {
     @Id
     @OneToOne
-    @JoinColumn(name = "lecturer_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "lecturer_id", referencedColumnName = "id")
     private Lecturer lecturer;
     @Column(nullable = false, length = 2000)
     private String url;
