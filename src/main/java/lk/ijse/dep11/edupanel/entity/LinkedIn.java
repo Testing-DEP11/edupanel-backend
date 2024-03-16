@@ -5,14 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "linkedin")
-public class LinkedIn implements Serializable {
+public class LinkedIn implements SuperEntity {
     @Id
     @OneToOne
     @JoinColumn(name = "lecturer_id", referencedColumnName = "id")
