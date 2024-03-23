@@ -56,7 +56,7 @@ public class CrudRepositoryImpl<T extends SuperEntity, ID extends Serializable> 
 
     @Override
     public long count() {
-        return em.createQuery("SELECT COUNT(e) FROM" + entityClzObj.getName() + " e", Long.class).getSingleResult();
+        return em.createQuery("SELECT COUNT(e) FROM " + entityClzObj.getName() + " e", Long.class).getSingleResult();
     }
 
     @Override
