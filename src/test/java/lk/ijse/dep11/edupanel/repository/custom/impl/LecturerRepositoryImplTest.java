@@ -1,5 +1,6 @@
 package lk.ijse.dep11.edupanel.repository.custom.impl;
 
+import lk.ijse.dep11.edupanel.WebAppConfig;
 import lk.ijse.dep11.edupanel.WebRootConfig;
 import lk.ijse.dep11.edupanel.entity.Lecturer;
 import lk.ijse.dep11.edupanel.repository.RepositoryFactory;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,8 +24,11 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {WebRootConfig.class})
+//@ExtendWith(SpringExtension.class)
+//@ContextConfiguration(classes = {WebRootConfig.class})
+//@ContextConfiguration(classes = {WebAppConfig.class, WebRootConfig.class})
+//@WebAppConfiguration
+@SpringJUnitWebConfig(classes = {WebRootConfig.class, WebAppConfig.class})
 class LecturerRepositoryImplTest {
 
     private final LecturerRepository repository = RepositoryFactory.getInstance().getRepository(RepositoryFactory.RepositoryType.LECTURER);
