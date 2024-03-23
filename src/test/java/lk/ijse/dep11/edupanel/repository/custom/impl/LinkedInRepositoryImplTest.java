@@ -76,7 +76,7 @@ class LinkedInRepositoryImplTest {
         entityManager.persist(lecturer);
         LinkedIn linkedIn = new LinkedIn(lecturer, "http://linkedin.com/kasun-sampath");
         repository.save(linkedIn);
-        repository.deleteById(lecturer);
+        repository.deleteById(lecturer.getId());
 
         LinkedIn dbLinkedIn = entityManager.find(LinkedIn.class, lecturer.getId());
         assertNull(dbLinkedIn);
@@ -84,6 +84,18 @@ class LinkedInRepositoryImplTest {
 
     @Test
     void existsById() {
+        Lecturer lecturer = new Lecturer("Kasun Sampath",
+                "Associate Instructor",
+                "BSc (Hons) in Computing",
+                LecturerType.VISITING, 0);
+        entityManager.persist(lecturer);
+        LinkedIn linkedIn = new LinkedIn(lecturer, "http://linkedin.com/kasun-sampath");
+        repository.save(linkedIn);
+        boolean result = repository.existsById(lecturer.getId());
+        boolean result2 = repository.existsById(-500);
+
+        assertTrue(result);
+        assertFalse(result2);
     }
 
     @Test

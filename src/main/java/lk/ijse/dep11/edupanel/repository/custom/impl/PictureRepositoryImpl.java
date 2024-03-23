@@ -7,14 +7,14 @@ import lk.ijse.dep11.edupanel.repository.custom.PictureRepository;
 
 import java.util.Optional;
 
-public class PictureRepositoryImpl extends CrudRepositoryImpl<Picture, Lecturer> implements PictureRepository {
-    @Override
-    public void deleteById(Lecturer pk) {
-        getEntityManager().remove(getEntityManager().find(Picture.class, pk.getId()));
-    }
-
-    @Override
-    public Optional<Picture> findById(Lecturer pk) {
-        return Optional.ofNullable(getEntityManager().find(Picture.class, pk.getId()));
-    }
+public class PictureRepositoryImpl extends CrudRepositoryImpl<Picture, Integer> implements PictureRepository {
+//    @Override
+//    public void deleteById(Lecturer pk) {
+//        getEntityManager().remove(getEntityManager().find(Picture.class, pk.getId()));
+//    }
+//
+//    @Override
+//    public Optional<Picture> findById(Lecturer pk) {
+//        return Optional.ofNullable(getEntityManager().find(Picture.class, pk.getId()));
+//    }
 }

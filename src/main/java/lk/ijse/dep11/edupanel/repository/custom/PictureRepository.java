@@ -7,5 +7,5 @@ import lk.ijse.dep11.edupanel.repository.CrudRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface PictureRepository extends CrudRepository<Picture, Lecturer> {
+public interface PictureRepository extends CrudRepository<Picture, Integer> {
 }
