@@ -27,7 +27,7 @@ class LecturerRepositoryImplTest {
 
     @AfterEach
     void tearDown() {
-        entityManager.getTransaction().rollback();
+        entityManager.getTransaction().commit();
         entityManager.close();
     }
 
