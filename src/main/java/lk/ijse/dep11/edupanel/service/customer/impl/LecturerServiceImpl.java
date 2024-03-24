@@ -22,10 +22,25 @@ import java.util.concurrent.TimeUnit;
 
 public class LecturerServiceImpl implements LecturerService {
 
-    private final LecturerRepository lecturerRepository = RepositoryFactory.getInstance().getRepository(RepositoryFactory.RepositoryType.LECTURER);
-    private final LinkedInRepository linkedInRepository = RepositoryFactory.getInstance().getRepository(RepositoryFactory.RepositoryType.LINKEDIN);
-    private final PictureRepository pictureRepository = RepositoryFactory.getInstance().getRepository(RepositoryFactory.RepositoryType.PICTURE);
+    private LecturerRepository lecturerRepository = RepositoryFactory.getInstance().getRepository(RepositoryFactory.RepositoryType.LECTURER);
+    private LinkedInRepository linkedInRepository = RepositoryFactory.getInstance().getRepository(RepositoryFactory.RepositoryType.LINKEDIN);
+    private PictureRepository pictureRepository = RepositoryFactory.getInstance().getRepository(RepositoryFactory.RepositoryType.PICTURE);
     private final Transformer transformer = new Transformer();
+
+//    public void setLecturerRepository(LecturerRepository lecturerRepository) {
+//        this.lecturerRepository = lecturerRepository;
+//        lecturerRepository.setEntityManager(AppStore.getEntityManager());
+//    }
+//
+//    public void setLinkedInRepository(LinkedInRepository linkedInRepository) {
+//        this.linkedInRepository = linkedInRepository;
+//        linkedInRepository.setEntityManager(AppStore.getEntityManager());
+//    }
+//
+//    public void setPictureRepository(PictureRepository pictureRepository) {
+//        this.pictureRepository = pictureRepository;
+//        pictureRepository.setEntityManager(AppStore.getEntityManager());
+//    }
 
     public LecturerServiceImpl() {
         lecturerRepository.setEntityManager(AppStore.getEntityManager());
@@ -38,10 +53,10 @@ public class LecturerServiceImpl implements LecturerService {
         AppStore.getEntityManager().getTransaction().begin();
         try {
             Lecturer lecturer = transformer.fromLecturerReqTO(lecturerReqTO);
-            lecturer = lecturerRepository.save(lecturer);
+            lecturerRepository.save(lecturer);
 
             if(lecturerReqTO.getLinkedIn() != null) {
-                linkedInRepository.save(new LinkedIn(lecturer, lecturerReqTO.getLinkedIn()));
+                linkedInRepository.save(lecturer.getLinkedIn());
             }
 
             String signUrl = null;
