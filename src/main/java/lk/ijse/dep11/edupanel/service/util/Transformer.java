@@ -16,6 +16,8 @@ public class Transformer {
     public Transformer() {
         mapper.typeMap(LinkedIn.class, String.class)
                 .setConverter(ctx -> ctx.getSource().getUrl());
+        mapper.typeMap(String.class, LinkedIn.class)
+                .setConverter(ctx -> new LinkedIn(null, ctx.getSource()));
     }
 
     Lecturer fromLecturerReqTO(LecturerReqTO lecturerReqTO) {
@@ -23,7 +25,10 @@ public class Transformer {
     }
     
     Lecturer fromLecturerTO(LecturerTO lecturerTO) {
-        return mapper.map(lecturerTO, Lecturer.class);
+//        return mapper.map(lecturerTO, Lecturer.class);
+        Lecturer lecturer = mapper.map(lecturerTO, Lecturer.class);
+        lecturer.getLinkedIn().setLecturer(lecturer);
+        return lecturer;
     }
     LecturerTO toLecturerTO(Lecturer lecturer) {
         return mapper.map(lecturer, LecturerTO.class);
