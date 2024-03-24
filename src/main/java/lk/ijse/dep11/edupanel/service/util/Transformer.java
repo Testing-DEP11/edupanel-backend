@@ -20,7 +20,7 @@ public class Transformer {
                 .setConverter(ctx -> new LinkedIn(null, ctx.getSource()));
     }
 
-    Lecturer fromLecturerReqTO(LecturerReqTO lecturerReqTO) {
+    public Lecturer fromLecturerReqTO(LecturerReqTO lecturerReqTO) {
         Lecturer lecturer = mapper.map(lecturerReqTO, Lecturer.class);
         if(lecturer.getLinkedIn() == null) {
             lecturer.setLinkedIn(null);
@@ -32,17 +32,17 @@ public class Transformer {
         return lecturer;
     }
     
-    Lecturer fromLecturerTO(LecturerTO lecturerTO) {
+    public Lecturer fromLecturerTO(LecturerTO lecturerTO) {
 //        return mapper.map(lecturerTO, Lecturer.class);
         Lecturer lecturer = mapper.map(lecturerTO, Lecturer.class);
         lecturer.getLinkedIn().setLecturer(lecturer);
         return lecturer;
     }
-    LecturerTO toLecturerTO(Lecturer lecturer) {
+    public LecturerTO toLecturerTO(Lecturer lecturer) {
         return mapper.map(lecturer, LecturerTO.class);
     }
 
-    List<LecturerTO> toLecturerTOList(List<Lecturer> lecturerList) {
+    public List<LecturerTO> toLecturerTOList(List<Lecturer> lecturerList) {
 //        return lecturerList.stream().map(lecturer -> {
 //            return this.toLecturerTO(lecturer);
 //        }).collect(Collectors.toList());
