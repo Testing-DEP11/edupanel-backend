@@ -29,6 +29,7 @@ public class LecturerServiceImpl implements LecturerService {
         AppStore.getEntityManager().getTransaction().begin();
         try {
             AppStore.getEntityManager().getTransaction().commit();
+            return null;
         } catch (Throwable e) {
             AppStore.getEntityManager().getTransaction().rollback();
             throw e;
@@ -73,6 +74,8 @@ public class LecturerServiceImpl implements LecturerService {
         AppStore.getEntityManager().getTransaction().begin();
         try {
             AppStore.getEntityManager().getTransaction().commit();
+            return null;
+
         } catch (Throwable e) {
             AppStore.getEntityManager().getTransaction().rollback();
             throw e;
@@ -84,6 +87,8 @@ public class LecturerServiceImpl implements LecturerService {
         AppStore.getEntityManager().getTransaction().begin();
         try {
             AppStore.getEntityManager().getTransaction().commit();
+            return null;
+
         } catch (Throwable e) {
             AppStore.getEntityManager().getTransaction().rollback();
             throw e;
