@@ -1,5 +1,8 @@
 package lk.ijse.dep11.edupanel.exception;
 
+import lombok.Getter;
+
+@Getter
 public class AppException extends RuntimeException{
     private final int errorCode;
 
