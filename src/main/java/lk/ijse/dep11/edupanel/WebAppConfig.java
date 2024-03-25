@@ -9,6 +9,7 @@ import lk.ijse.dep11.edupanel.converter.LecturerTypeConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
@@ -21,6 +22,7 @@ import java.io.InputStream;
 @ComponentScan
 @EnableWebMvc
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class WebAppConfig implements WebMvcConfigurer {
 
     @Bean
