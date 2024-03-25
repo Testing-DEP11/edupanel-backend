@@ -16,8 +16,8 @@ public interface LecturerService extends SuperService {
 //    void setLinkedInRepository(LinkedInRepository linkedInRepository);
 //    void setPictureRepository(PictureRepository pictureRepository);
     LecturerTO saveLecturer(LecturerReqTO lecturerReqTO);
-    void updateLecturerDetailsWithImage(LecturerReqTO lecturerReqTO);
-    void updateLecturerDetailsWithoutImage(LecturerTO lecturerTO);
+    void updateLecturerDetails(LecturerReqTO lecturerReqTO);
+    void updateLecturerDetails(LecturerTO lecturerTO);
     void deleteLecturer(Integer lecturerId);
     LecturerTO getLecturerDetails(Integer lecturerId);
     List<LecturerTO> getLecturers(LecturerType type);

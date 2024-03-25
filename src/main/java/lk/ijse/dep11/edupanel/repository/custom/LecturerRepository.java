@@ -7,4 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LecturerRepository extends CrudRepository<Lecturer, Integer> {
+    List<Lecturer> findFullTimeLecturers();
+    List<Lecturer> findVisitingLecturers();
 }

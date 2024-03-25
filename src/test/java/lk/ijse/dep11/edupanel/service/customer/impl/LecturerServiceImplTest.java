@@ -5,6 +5,7 @@ import lk.ijse.dep11.edupanel.WebAppConfig;
 import lk.ijse.dep11.edupanel.WebRootConfig;
 import lk.ijse.dep11.edupanel.entity.Lecturer;
 import lk.ijse.dep11.edupanel.entity.LinkedIn;
+import lk.ijse.dep11.edupanel.exception.AppException;
 import lk.ijse.dep11.edupanel.repository.custom.LecturerRepository;
 import lk.ijse.dep11.edupanel.repository.custom.LinkedInRepository;
 import lk.ijse.dep11.edupanel.repository.custom.PictureRepository;
@@ -92,5 +93,71 @@ class LecturerServiceImplTest {
         assertEquals(lecturerReqTO.getDisplayOrder(), lecturerTO.getDisplayOrder());
         assumingThat(lecturerReqTO.getLinkedIn() != null, () -> assertEquals(lecturerReqTO.getLinkedIn(), lecturerTO.getLinkedIn()));
         assumingThat(lecturerReqTO.getLinkedIn() == null, () -> assertNull(lecturerTO.getLinkedIn()));
+    }
+
+    @Test
+    void deleteLecturer() {
+        LecturerReqTO lecturerReqTO = new LecturerReqTO(
+                "Amith",
+                "Associate Lecturer", "BSc, MSc",
+                LecturerType.VISITING, 5,
+                null,
+                "https://linkedin.com"
+        );
+        LecturerTO lecturerTO = lecturerService.saveLecturer(lecturerReqTO);
+        lecturerService.deleteLecturer(lecturerTO.getId());
+
+        assertThrows(AppException.class, () -> lecturerService.getLecturerDetails(lecturerTO.getId()));
+        assertThrows(AppException.class, () -> lecturerService.deleteLecturer(-100));
+    }
+
+    @Test
+    void getLecturerDetails() {
+        LecturerReqTO lecturerReqTO = new LecturerReqTO(
+                "Amith",
+                "Associate Lecturer", "BSc, MSc",
+                LecturerType.VISITING, 5,
+                null,
+                "https://linkedin.com"
+        );
+        LecturerTO lecturerTO = lecturerService.saveLecturer(lecturerReqTO);
+        LecturerTO lecturerDetails = lecturerService.getLecturerDetails(lecturerTO.getId());
+
+        assertEquals(lecturerTO, lecturerDetails);
+        assertThrows(AppException.class, () -> lecturerService.getLecturerDetails(-100));
+    }
+
+    @Test
+    void getLecturers() {
+        for (int i = 0; i < 10; i++) {
+            LecturerReqTO lecturerReqTO = new LecturerReqTO(
+                    "Amith",
+                    "Associate Lecturer", "BSc, MSc",
+                    i < 5 ? LecturerType.VISITING : LecturerType.FULL_TIME, 5,
+                    null,
+                    "https://linkedin.com"
+            );
+            lecturerService.saveLecturer(lecturerReqTO);
+        }
+        assertTrue(lecturerService.getLecturers(null).size() >= 10);
+        assertTrue(lecturerService.getLecturers(LecturerType.FULL_TIME).size() >= 5);
+        assertTrue(lecturerService.getLecturers(LecturerType.VISITING).size() >= 5);
+    }
+
+    @Test
+    void updateLecturerDetails() {
+        LecturerReqTO lecturerReqTO = new LecturerReqTO(
+                "Amith",
+                "Associate Lecturer", "BSc, MSc",
+                LecturerType.VISITING, 5,
+                null,
+                "https://linkedin.com"
+        );
+        LecturerTO lecturerTO = lecturerService.saveLecturer(lecturerReqTO);
+        lecturerTO.setName("Nuwan");
+        lecturerTO.setLinkedIn(null);
+        lecturerService.updateLecturerDetails(lecturerTO);
+        LecturerTO lecturer = lecturerService.getLecturerDetails(lecturerTO.getId());
+        assertEquals(lecturerTO, lecturer);
     }
 }

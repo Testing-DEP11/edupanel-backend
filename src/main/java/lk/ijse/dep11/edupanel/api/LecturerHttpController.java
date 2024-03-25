@@ -167,6 +167,10 @@ public class LecturerHttpController {
     public LecturerTO getLecturerDetails(@PathVariable("lecturer-id") Integer lectureId){
         Lecturer lecturer = em.find(Lecturer.class, lectureId);
         if(lecturer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return getLecturerTO(lecturer);
+    }
+
+    private LecturerTO getLecturerTO(Lecturer lecturer) {
         LecturerTO lecturerTO = mapper.map(lecturer, LecturerTO.class);
         if(lecturer.getLinkedIn() != null){
             lecturerTO.setLinkedIn(lecturer.getLinkedIn().getUrl());
@@ -190,16 +194,7 @@ public class LecturerHttpController {
     }
 
     private List<LecturerTO> getLecturerTOList(TypedQuery<Lecturer> query) {
-        return query.getResultStream().map(lecturerEntity -> {
-            LecturerTO lecturerTO = mapper.map(lecturerEntity, LecturerTO.class);
-            if(lecturerEntity.getLinkedIn() != null){
-                lecturerTO.setLinkedIn(lecturerEntity.getLinkedIn().getUrl());
-            }
-            if(lecturerEntity.getPicture() != null) {
-                lecturerTO.setPicture(bucket.get(lecturerEntity.getPicture().getPicturePath()).signUrl(1, TimeUnit.DAYS).toString());
-            }
-            return lecturerTO;
-        }).collect(Collectors.toList());
+        return query.getResultStream().map(this::getLecturerTO).collect(Collectors.toList());
     }
 
     private void updateLinkedIn(Lecturer currentLecturer, Lecturer newLecturer) {
