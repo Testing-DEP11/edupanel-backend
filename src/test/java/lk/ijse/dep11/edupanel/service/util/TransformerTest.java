@@ -1,18 +1,18 @@
 package lk.ijse.dep11.edupanel.service.util;
 
-import lk.ijse.dep11.edupanel.WebAppConfig;
-import lk.ijse.dep11.edupanel.WebRootConfig;
+import lk.ijse.dep11.edupanel.AppInitializer;
 import lk.ijse.dep11.edupanel.entity.Lecturer;
 import lk.ijse.dep11.edupanel.entity.LinkedIn;
 import lk.ijse.dep11.edupanel.to.LecturerTO;
 import lk.ijse.dep11.edupanel.to.requst.LecturerReqTO;
 import lk.ijse.dep11.edupanel.util.LecturerType;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitWebConfig(classes = {WebRootConfig.class, WebAppConfig.class})
+@SpringBootTest
 class TransformerTest {
 
     private final Transformer transformer = new Transformer();

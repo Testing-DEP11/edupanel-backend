@@ -1,12 +1,12 @@
 package lk.ijse.dep11.edupanel.repository.impl;
 
-import lk.ijse.dep11.edupanel.WebAppConfig;
-import lk.ijse.dep11.edupanel.WebRootConfig;
+import lk.ijse.dep11.edupanel.AppInitializer;
 import lk.ijse.dep11.edupanel.entity.Lecturer;
 import lk.ijse.dep11.edupanel.repository.LecturerRepository;
 import lk.ijse.dep11.edupanel.util.LecturerType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 //@ContextConfiguration(classes = {WebRootConfig.class})
 //@ContextConfiguration(classes = {WebAppConfig.class, WebRootConfig.class})
 //@WebAppConfiguration
-@SpringJUnitWebConfig(classes = {WebRootConfig.class, WebAppConfig.class})
+@SpringBootTest
 @Transactional
 class LecturerRepositoryImplTest {
 
