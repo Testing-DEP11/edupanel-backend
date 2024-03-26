@@ -1,8 +1,5 @@
 package lk.ijse.dep11.edupanel.service.customer;
 
-import lk.ijse.dep11.edupanel.repository.custom.LecturerRepository;
-import lk.ijse.dep11.edupanel.repository.custom.LinkedInRepository;
-import lk.ijse.dep11.edupanel.repository.custom.PictureRepository;
 import lk.ijse.dep11.edupanel.service.SuperService;
 import lk.ijse.dep11.edupanel.to.LecturerTO;
 import lk.ijse.dep11.edupanel.to.requst.LecturerReqTO;

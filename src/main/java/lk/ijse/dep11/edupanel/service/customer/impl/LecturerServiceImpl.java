@@ -7,9 +7,9 @@ import lk.ijse.dep11.edupanel.entity.Lecturer;
 import lk.ijse.dep11.edupanel.entity.LinkedIn;
 import lk.ijse.dep11.edupanel.entity.Picture;
 import lk.ijse.dep11.edupanel.exception.AppException;
-import lk.ijse.dep11.edupanel.repository.custom.LecturerRepository;
-import lk.ijse.dep11.edupanel.repository.custom.LinkedInRepository;
-import lk.ijse.dep11.edupanel.repository.custom.PictureRepository;
+import lk.ijse.dep11.edupanel.repository.LecturerRepository;
+import lk.ijse.dep11.edupanel.repository.LinkedInRepository;
+import lk.ijse.dep11.edupanel.repository.PictureRepository;
 import lk.ijse.dep11.edupanel.service.customer.LecturerService;
 import lk.ijse.dep11.edupanel.service.util.Transformer;
 import lk.ijse.dep11.edupanel.to.LecturerTO;
@@ -96,14 +96,14 @@ public class LecturerServiceImpl implements LecturerService {
                 pictureRepository.deleteById(currentLecturer.getId());
                 bucket.get(currentLecturer.getPicture().getPicturePath()).delete();
             } else if (newLecturer.getPicture() != null) {
-                pictureRepository.update(newLecturer.getPicture());
+                pictureRepository.save(newLecturer.getPicture());
                 bucket.create(newLecturer.getPicture().getPicturePath(), lecturerReqTO.getPicture().getInputStream(), lecturerReqTO.getPicture().getContentType());
             }
         } catch (IOException e) {
             throw new AppException(500, "Failed to update the image", e);
         }
 
-        lecturerRepository.update(newLecturer);
+        lecturerRepository.save(newLecturer);
 
     }
 
@@ -119,7 +119,7 @@ public class LecturerServiceImpl implements LecturerService {
 
         updateLinkedIn(currentLecturer, newLecturer);
 
-        lecturerRepository.update(newLecturer);
+        lecturerRepository.save(newLecturer);
 
     }
 
@@ -174,7 +174,7 @@ public class LecturerServiceImpl implements LecturerService {
         } else if (newLecturer.getLinkedIn() == null && currentLecturer.getLinkedIn() != null) {
             linkedInRepository.deleteById(currentLecturer.getId());
         } else if (newLecturer.getLinkedIn() != null){
-            linkedInRepository.update(newLecturer.getLinkedIn());
+            linkedInRepository.save(newLecturer.getLinkedIn());
         }
     }
 }

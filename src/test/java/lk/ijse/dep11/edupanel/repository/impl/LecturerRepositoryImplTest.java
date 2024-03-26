@@ -1,19 +1,16 @@
-package lk.ijse.dep11.edupanel.repository.custom.impl;
+package lk.ijse.dep11.edupanel.repository.impl;
 
 import lk.ijse.dep11.edupanel.WebAppConfig;
 import lk.ijse.dep11.edupanel.WebRootConfig;
 import lk.ijse.dep11.edupanel.entity.Lecturer;
-import lk.ijse.dep11.edupanel.repository.custom.LecturerRepository;
+import lk.ijse.dep11.edupanel.repository.LecturerRepository;
 import lk.ijse.dep11.edupanel.util.LecturerType;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
 import java.util.List;
@@ -59,7 +56,7 @@ class LecturerRepositoryImplTest {
         savedLecturer.setName("Kasun Sampath");
         savedLecturer.setQualifications("BSc in computing");
         savedLecturer.setType(LecturerType.VISITING);
-        repository.update(savedLecturer);
+        repository.save(savedLecturer);
 
         Lecturer updatedLecturer = entityManager.find(Lecturer.class, savedLecturer.getId());
         assertEquals(savedLecturer, updatedLecturer);

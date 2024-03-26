@@ -1,20 +1,17 @@
-package lk.ijse.dep11.edupanel.repository.custom.impl;
+package lk.ijse.dep11.edupanel.repository.impl;
 
 import lk.ijse.dep11.edupanel.WebAppConfig;
 import lk.ijse.dep11.edupanel.WebRootConfig;
 import lk.ijse.dep11.edupanel.entity.Lecturer;
 import lk.ijse.dep11.edupanel.entity.LinkedIn;
-import lk.ijse.dep11.edupanel.repository.custom.LinkedInRepository;
+import lk.ijse.dep11.edupanel.repository.LinkedInRepository;
 import lk.ijse.dep11.edupanel.util.LecturerType;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +50,7 @@ class LinkedInRepositoryImplTest {
         repository.save(linkedIn);
 
         linkedIn.setUrl("http://linkedin.com/kasun-sampath-2");
-        repository.update(linkedIn);
+        repository.save(linkedIn);
         LinkedIn actualLecturer = entityManager.find(LinkedIn.class, lecturer.getId());
         assertEquals(linkedIn, actualLecturer);
     }
