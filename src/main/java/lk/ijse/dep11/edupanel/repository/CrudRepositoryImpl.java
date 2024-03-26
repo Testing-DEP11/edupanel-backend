@@ -4,6 +4,7 @@ package lk.ijse.dep11.edupanel.repository;
 import lk.ijse.dep11.edupanel.entity.SuperEntity;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -59,6 +60,7 @@ public class CrudRepositoryImpl<T extends SuperEntity, ID extends Serializable> 
         return em.createQuery("SELECT COUNT(e) FROM " + entityClzObj.getName() + " e", Long.class).getSingleResult();
     }
 
+    @PersistenceContext
     @Override
     public void setEntityManager(EntityManager em) {
         this.em = em;

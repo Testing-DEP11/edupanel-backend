@@ -1,9 +1,9 @@
 package lk.ijse.dep11.edupanel.repository.custom.impl;
 
+import lk.ijse.dep11.edupanel.WebAppConfig;
 import lk.ijse.dep11.edupanel.WebRootConfig;
 import lk.ijse.dep11.edupanel.entity.Lecturer;
 import lk.ijse.dep11.edupanel.entity.LinkedIn;
-import lk.ijse.dep11.edupanel.repository.RepositoryFactory;
 import lk.ijse.dep11.edupanel.repository.custom.LinkedInRepository;
 import lk.ijse.dep11.edupanel.util.LecturerType;
 import org.junit.jupiter.api.AfterEach;
@@ -11,31 +11,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitWebConfig(classes = {WebRootConfig.class})
+@SpringJUnitWebConfig(classes = {WebRootConfig.class, WebAppConfig.class})
+@Transactional
 class LinkedInRepositoryImplTest {
 
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
+    @PersistenceContext
     private EntityManager entityManager;
-    private final LinkedInRepository repository = RepositoryFactory.getInstance().getRepository(RepositoryFactory.RepositoryType.LINKEDIN);
-    @BeforeEach
-    void setUp() {
-        entityManager = entityManagerFactory.createEntityManager();
-        repository.setEntityManager(entityManager);
-        entityManager.getTransaction().begin();
-    }
-
-    @AfterEach
-    void tearDown() {
-        entityManager.getTransaction().commit();
-        entityManager.close();
-    }
+    @Autowired
+    private LinkedInRepository repository;
 
     @Test
     void save() {
