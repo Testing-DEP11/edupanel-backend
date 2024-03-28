@@ -73,53 +73,66 @@ public class LecturerServiceImpl implements LecturerService {
 
     @Override
     public void updateLecturerDetails(LecturerReqTO lecturerReqTO) {
-        Optional<Lecturer> optLecturer = lecturerRepository.findById(lecturerReqTO.getId());
-        if (optLecturer.isEmpty()) throw new AppException(404, "No lecturer found");
-        Lecturer currentLecturer = optLecturer.get();
+        Lecturer currentLecturer = lecturerRepository.findById(lecturerReqTO.getId()).orElseThrow(() -> new AppException(404, "No lecturer associated with the id"));
 
+        Blob blobRef = null;
+        if (currentLecturer.getPicture() != null) {
+            blobRef = bucket.get(currentLecturer.getPicture().getPicturePath());
+            pictureRepository.delete(currentLecturer.getPicture());
+        }
+
+        if (currentLecturer.getLinkedIn() != null) {
+            linkedInRepository.delete(currentLecturer.getLinkedIn());
+        }
 
         Lecturer newLecturer = transformer.fromLecturerReqTO(lecturerReqTO);
+        newLecturer.setLinkedIn(null);
+
+        newLecturer = lecturerRepository.save(newLecturer);
+
+        /* Let's check whether we have new stuff, if so let's persist them */
         if(lecturerReqTO.getPicture() != null) {
-            newLecturer.setPicture(new Picture(newLecturer, "lecturer/" + currentLecturer.getId()));
+            Picture picture = new Picture(newLecturer, "lecturers/" + newLecturer.getId());
+            newLecturer.setPicture(pictureRepository.save(picture));
         }
 
         if (lecturerReqTO.getLinkedIn() != null) {
-            newLecturer.setLinkedIn(new LinkedIn(newLecturer, lecturerReqTO.getLinkedIn()));
+            LinkedIn linkedIn = new LinkedIn(newLecturer, lecturerReqTO.getLinkedIn());
+            newLecturer.setLinkedIn(linkedInRepository.save(linkedIn));
         }
 
-        updateLinkedIn(currentLecturer, newLecturer);
         try {
-            if (newLecturer.getPicture() != null && currentLecturer.getPicture() == null) {
-                pictureRepository.save(newLecturer.getPicture());
+            if (lecturerReqTO.getPicture() != null) {
                 bucket.create(newLecturer.getPicture().getPicturePath(), lecturerReqTO.getPicture().getInputStream(), lecturerReqTO.getPicture().getContentType());
-            } else if (newLecturer.getPicture() == null && currentLecturer.getPicture() != null) {
-                pictureRepository.deleteById(currentLecturer.getId());
-                bucket.get(currentLecturer.getPicture().getPicturePath()).delete();
-            } else if (newLecturer.getPicture() != null) {
-                pictureRepository.save(newLecturer.getPicture());
-                bucket.create(newLecturer.getPicture().getPicturePath(), lecturerReqTO.getPicture().getInputStream(), lecturerReqTO.getPicture().getContentType());
+            }else if (blobRef != null){
+                blobRef.delete();
             }
         } catch (IOException e) {
             throw new AppException(500, "Failed to update the image", e);
         }
-
-        lecturerRepository.save(newLecturer);
-
     }
 
     @Override
     public void updateLecturerDetails(LecturerTO lecturerTO) {
-        Optional<Lecturer> optLecturer = lecturerRepository.findById(lecturerTO.getId());
-        if (optLecturer.isEmpty()) throw new AppException(404, "No lecturer found");
-        Lecturer currentLecturer = optLecturer.get();
+
+        Lecturer currentLecturer = lecturerRepository.findById(lecturerTO.getId()).orElseThrow(() -> new AppException(404, "No lecturer associated with the id"));
+
+        /* Remove the old linked in */
+        if (currentLecturer.getLinkedIn() != null) {
+            linkedInRepository.delete(currentLecturer.getLinkedIn());
+        }
 
 
         Lecturer newLecturer = transformer.fromLecturerTO(lecturerTO);
-        newLecturer.setPicture(currentLecturer.getPicture());
+        newLecturer.setLinkedIn(null);
 
-        updateLinkedIn(currentLecturer, newLecturer);
+        newLecturer = lecturerRepository.save(newLecturer);
 
-        lecturerRepository.save(newLecturer);
+        /* Add a new linked in entry if exists */
+        if (lecturerTO.getLinkedIn() != null) {
+            LinkedIn linkedIn = new LinkedIn(newLecturer, lecturerTO.getLinkedIn());
+            newLecturer.setLinkedIn(linkedInRepository.save(linkedIn));
+        }
 
     }
 
@@ -168,13 +181,4 @@ public class LecturerServiceImpl implements LecturerService {
 
     }
 
-    private void updateLinkedIn(Lecturer currentLecturer, Lecturer newLecturer) {
-        if (newLecturer.getLinkedIn() != null && currentLecturer.getLinkedIn() == null) {
-            linkedInRepository.save(newLecturer.getLinkedIn());
-        } else if (newLecturer.getLinkedIn() == null && currentLecturer.getLinkedIn() != null) {
-            linkedInRepository.deleteById(currentLecturer.getId());
-        } else if (newLecturer.getLinkedIn() != null){
-            linkedInRepository.save(newLecturer.getLinkedIn());
-        }
-    }
 }
